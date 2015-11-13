@@ -25,6 +25,12 @@ from pycalico.datastore_datatypes import Rules, BGPPeer, IPPool, \
 from pycalico.datastore_errors import DataStoreError, \
     ProfileNotInEndpoint, ProfileAlreadyInEndpoint, MultipleEndpointsMatch
 from pycalico.util import get_hostname
+import logging
+# TODO: Suppress "InsecurePlatform" warnings from urllib3.
+# TODO: Ideally this should be sent to logs with logging.captureWarnings = True
+# TODO: But we do not have any logs for libcalico!
+logging.captureWarnings(True)
+_log = logging.getLogger(__name__)
 
 ETCD_AUTHORITY_DEFAULT = "127.0.0.1:2379"
 ETCD_AUTHORITY_ENV = "ETCD_AUTHORITY"
