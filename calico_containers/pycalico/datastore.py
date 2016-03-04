@@ -1128,9 +1128,10 @@ class DatastoreClient(object):
     @handle_errors
     def set_default_node_as(self, as_num):
         """
-        Return the default node BGP AS Number
+        Set the default node BGP AS Number.
 
-        :return: The default node BGP AS Number.
+        :param as_num: (String/Integer) The AS number to set as the default.
+        :return: None.
         """
         self.etcd_client.write(BGP_NODE_DEF_AS_PATH, str(as_num))
 
@@ -1151,3 +1152,42 @@ class DatastoreClient(object):
             return str(DEFAULT_AS_NUM)
         else:
             return str(as_num)
+
+    @handle_errors
+    def set_default_mtu(self, mtu):
+        """
+        Return the MTU associated with the given host.
+
+        :param mtu: The MTU to set as default.
+        :return: None.
+        """
+        pass
+
+    @handle_errors
+    def get_default_mtu(self):
+        """
+        Return the default global MTU.
+
+        :return: The default global MTU as a string.
+        """
+        pass
+
+    @handle_errors
+    def set_host_mtu(self, hostname, mtu):
+        """
+        Return the MTU associated with the given host.
+
+        :param hostname: The hostname for which to get MTU
+        :return: The MTU of the host as a string.
+        """
+        pass
+
+    @handle_errors
+    def get_host_mtu(self, hostname):
+        """
+        Return the MTU associated with the given host.
+
+        :param hostname: The hostname for which to get MTU
+        :return: The MTU of the host as a string.
+        """
+        pass
