@@ -86,18 +86,26 @@ def create_veth(veth_name_host, veth_name_ns_temp, mtu=None):
     """
     # Create the veth
     _log.debug("Creating veth %s in temp_ns: %s", veth_name_host, veth_name_ns_temp)
-    check_output(['ip', 'link',
-                  'add', veth_name_host,
-                  'type', 'veth',
-                  'peer', 'name', veth_name_ns_temp],
-                 timeout=IP_CMD_TIMEOUT)
-
     if mtu:
+        check_output(['ip', 'link',
+                      'add', veth_name_host,
+                      'type', 'veth',
+                      'peer', 'name', veth_name_ns_temp,
+                      'mtu', str(mtu)],
+                      timeout=IP_CMD_TIMEOUT)
+
+        #Is this necessary for MTU????
         check_output(['ip', 'link',
                       'set', veth_name_host, 'up',
                       'mtu', str(mtu)],
                      timeout=IP_CMD_TIMEOUT)
     else:
+        check_output(['ip', 'link',
+                     'add', veth_name_host,
+                     'type', 'veth',
+                     'peer', 'name', veth_name_ns_temp],
+                     timeout=IP_CMD_TIMEOUT)
+
         check_output(['ip', 'link',
                       'set', veth_name_host, 'up'],
                      timeout=IP_CMD_TIMEOUT)
@@ -183,7 +191,7 @@ def move_veth_into_ns(namespace, veth_name_ns_temp, veth_name_ns, mtu=None):
                              "set", veth_name_ns, "up"])
 
 
-def set_veth_mac(veth_name_host, mac):
+def set_veth_mac(veth_name_host, mac, mtu=None):
     """
     Set the veth MAC address.
     :param veth_name_host: The name of the veth.
@@ -191,10 +199,17 @@ def set_veth_mac(veth_name_host, mac):
     :return: None. Raises CalledProcessError on error.
     """
     #TODO MAC should be an EUI object.
-    check_output(['ip', 'link', 'set',
-                'dev', veth_name_host,
-                'address', mac],
-               timeout=IP_CMD_TIMEOUT)
+    if mtu is not None:
+        check_output(['ip', 'link', 'set',
+                      'dev', veth_name_host,
+                      'address', mac,
+                      'mtu', str(mtu)],
+                     timeout=IP_CMD_TIMEOUT)
+    else:
+        check_output(['ip', 'link', 'set',
+                      'dev', veth_name_host,
+                      'address', mac],
+                     timeout=IP_CMD_TIMEOUT)
 
 
 def add_ns_default_route(namespace, next_hop, veth_name_ns):
